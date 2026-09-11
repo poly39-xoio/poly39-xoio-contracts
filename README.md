@@ -53,6 +53,24 @@ Instant betting on the last hexadecimal character of a **Chainlink VRF**-generat
 - Max 50 USDT per bet, up to 20 bets per transaction.
 - Result is emitted as a `GameResult` event and verifiable on Polygonscan.
 
+## 🀄 Mahjong — On-Chain Taiwanese Mahjong
+
+Four-player Taiwanese (16-tile) mahjong with **on-chain escrow and settlement** on Polygon. The platform never participates in betting — the contract only escrows each player's deposit, keeps a per-seat on-chain ledger, takes a 5% winner management fee, and refunds balances when a table finishes or is aborted.
+
+- **Contract:** `MahjongMatch` (v2.2)
+- **Mainnet address:** `0xDc436C37F13eaE63B4dE315FdC0e87529968eD86`
+- **Site:** https://xoio.io/mahjong.html
+
+### How it works
+
+- **4 players**, Taiwanese 16-tile rules. A table plays an **East round** (the dealer rotates 4 times), then finalises.
+- Players deposit **USDT into the contract (escrow)**; per-round winnings/losses move an internal on-chain ledger — no per-round external transfers.
+- Each round's **shuffle seed is written on-chain** (`RoundStarted` event), so any round can be recomputed and audited with the open-source engine.
+- **5% management fee** on the winner (accumulated on-chain); balances are **automatically refunded** when a table finishes or is aborted.
+- A backend `settler` submits round results (`settleRound`); the tai cap and payout formula are **hard-coded** in the contract.
+
+Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.md`, `CIRCLE_CONTINUE_SPEC.md`, `MAHJONG_V2_NOTE.md`.
+
 ## 📁 Repository structure
 
 ```
@@ -60,13 +78,18 @@ contracts/
 ├── poly39/
 │   ├── Poly39V6_Polygon.sol      # Lottery contract V6 (legacy, paused backup)
 │   └── Poly39_VRF.sol            # Lottery contract V7 (mainnet, Chainlink VRF)
-└── xoio/
-    ├── XOIOV2.sol                # Hash game v2
-    ├── XOIOV3.sol                # Hash game v3
-    ├── XOIOV4.sol                # Hash game v4 (mainnet, Chainlink VRF)
-    ├── XOIOV2_flattened.sol
-    ├── XOIOV3_flattened.sol
-    └── XOIOV4_flattened.sol
+├── xoio/
+│   ├── XOIOV2.sol                # Hash game v2
+│   ├── XOIOV3.sol                # Hash game v3
+│   ├── XOIOV4.sol                # Hash game v4 (mainnet, Chainlink VRF)
+│   ├── XOIOV2_flattened.sol
+│   ├── XOIOV3_flattened.sol
+│   └── XOIOV4_flattened.sol
+└── mahjong/
+    ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v2.2)
+    ├── GAME_FLOW_CONTROL_SPEC.md
+    ├── CIRCLE_CONTINUE_SPEC.md
+    └── MAHJONG_V2_NOTE.md
 ```
 
 ## 🔒 Security
