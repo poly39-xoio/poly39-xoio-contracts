@@ -101,7 +101,7 @@ contracts/
 ## 📬 Contact
 
 - **Email:** [admin@poly39.io](mailto:admin@poly39.io)
-- **X / Twitter:** [@poly39io](https://x.com/poly39io)
+- **X / Twitter:** [@poly39xoio](https://x.com/poly39xoio)
 - **Poly39:** https://poly39.io
 - **XOIO:** https://xoio.io
 
