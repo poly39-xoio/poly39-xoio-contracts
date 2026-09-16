@@ -8,11 +8,9 @@ A fully decentralized 5-number lottery on Polygon.
 
 ### Contracts
 
-| Contract | Version | RNG | Status |
+| Contract | Ticket | RNG | Status |
 |---|---|---|---|
-| `Lotto39` | current (**2 USDT**) | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD) — **live on poly39.io** |
-| `Poly39_VRF` | v7 (**5 USDT**) | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0x7b3e0543b54a13688a4ee274576ef7c057bd83ac`](https://polygonscan.com/address/0x7b3e0543b54a13688a4ee274576ef7c057bd83ac) — previous version |
-| `Poly39V6_Polygon` | v6 (legacy) | Block hash (pseudo-random) | **Mainnet** [`0x89072cD5859EfeDad2CF947A27622f126439f3C2`](https://polygonscan.com/address/0x89072cD5859EfeDad2CF947A27622f126439f3C2) — paused backup |
+| `Lotto39` | **2 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD) — **live** |
 
 - **Site:** https://poly39.io
 
@@ -20,11 +18,10 @@ A fully decentralized 5-number lottery on Polygon.
 
 - Each round lasts **120 minutes** (90 min betting → 5 min draw buffer → 25 min distribution).
 - Players pick **5 numbers**; tickets are **2 USDT** each.
-- **`Lotto39` (current)**: winning numbers are generated from **Chainlink VRF v2.5** — cryptographically verifiable randomness, provable on-chain.
-- **`Poly39_VRF` (v7)** uses the same VRF draw format; V6 (legacy) used the Polygon block hash at draw time.
+- Winning numbers are generated from **Chainlink VRF v2.5** — cryptographically verifiable randomness, provable on-chain.
 - Prizes are distributed **automatically by the contract** to winners' wallets — no manual claims.
-- **0.5% management fee** per round, 60% of which is shared with equity partners.
-- **Round limits (`Lotto39`):** max **1,500 tickets/round**, max **500 tickets/player**, max **126 tickets per purchase tx** (anti-monopoly + gas safety).
+- **0.5% management fee** per round.
+- **Round limits:** max **1,500 tickets/round**, max **500 tickets/player**, max **126 tickets per purchase tx** (anti-monopoly + gas safety).
 
 ### Prize structure
 
@@ -77,9 +74,7 @@ Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.
 ```
 contracts/
 ├── poly39/
-│   ├── Lotto39.sol               # Lottery contract (current, 2 USDT, Chainlink VRF v2.5)
-│   ├── Poly39_VRF.sol            # Lottery contract v7 (previous, 5 USDT)
-│   └── Poly39V6_Polygon.sol      # Lottery contract v6 (legacy, paused backup)
+│   └── Lotto39.sol               # Lottery contract (2 USDT, Chainlink VRF v2.5)
 ├── xoio/
 │   ├── XOIOV2.sol                # Hash game v2
 │   ├── XOIOV3.sol                # Hash game v3
@@ -106,8 +101,6 @@ contracts/
 - **X / Twitter:** [@poly39xoio](https://x.com/poly39xoio)
 - **Poly39:** https://poly39.io
 - **XOIO:** https://xoio.io
-
-Interested in the Equity Partner Program or partnerships? Reach out anytime.
 
 ## ⚠️ Disclaimer
 
