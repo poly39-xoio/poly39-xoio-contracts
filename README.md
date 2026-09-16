@@ -10,33 +10,34 @@ A fully decentralized 5-number lottery on Polygon.
 
 | Contract | Version | RNG | Status |
 |---|---|---|---|
-| `Poly39V6_Polygon` | V6 (legacy) | Block hash (pseudo-random) | **Mainnet** [`0x89072cD5859EfeDad2CF947A27622f126439f3C2`](https://polygonscan.com/address/0x89072cD5859EfeDad2CF947A27622f126439f3C2) — paused backup |
-| `Poly39_VRF` | V7 (live) | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0x7b3e0543b54a13688a4ee274576ef7c057bd83ac`](https://polygonscan.com/address/0x7b3e0543b54a13688a4ee274576ef7c057bd83ac) — **live** |
+| `Lotto39` | current (**2 USDT**) | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD) — **live on poly39.io** |
+| `Poly39_VRF` | v7 (**5 USDT**) | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0x7b3e0543b54a13688a4ee274576ef7c057bd83ac`](https://polygonscan.com/address/0x7b3e0543b54a13688a4ee274576ef7c057bd83ac) — previous version |
+| `Poly39V6_Polygon` | v6 (legacy) | Block hash (pseudo-random) | **Mainnet** [`0x89072cD5859EfeDad2CF947A27622f126439f3C2`](https://polygonscan.com/address/0x89072cD5859EfeDad2CF947A27622f126439f3C2) — paused backup |
 
 - **Site:** https://poly39.io
 
 ### How it works
 
 - Each round lasts **120 minutes** (90 min betting → 5 min draw buffer → 25 min distribution).
-- Players pick **5 numbers**; tickets are 5 USDT each.
-- **V7 (`Poly39_VRF`)**: winning numbers are generated from **Chainlink VRF v2.5** — cryptographically verifiable randomness, provable on-chain.
-- **V6 (legacy)**: winning numbers from the Polygon block hash at draw time.
+- Players pick **5 numbers**; tickets are **2 USDT** each.
+- **`Lotto39` (current)**: winning numbers are generated from **Chainlink VRF v2.5** — cryptographically verifiable randomness, provable on-chain.
+- **`Poly39_VRF` (v7)** uses the same VRF draw format; V6 (legacy) used the Polygon block hash at draw time.
 - Prizes are distributed **automatically by the contract** to winners' wallets — no manual claims.
-- **1% management fee** per round, 60% of which is shared with equity partners.
-- **Round limits (V7):** max **1,500 tickets/round**, max **500 tickets/player** (anti-monopoly + gas safety).
+- **0.5% management fee** per round, 60% of which is shared with equity partners.
+- **Round limits (`Lotto39`):** max **1,500 tickets/round**, max **500 tickets/player**, max **126 tickets per purchase tx** (anti-monopoly + gas safety).
 
 ### Prize structure
 
 | Prize | Match | Share |
 |---|---|---|
-| 1st | 5/5 | 60% of prize pool |
-| 2nd | 4/5 | 10% of prize pool |
-| 3rd | 3/5 | Fixed 250 USDT |
-| 4th | 2/5 | Fixed 10 USDT |
+| 1st | 5/5 | 50% of prize pool |
+| 2nd | 4/5 | 8% of prize pool |
+| 3rd | 3/5 | Fixed 50 USDT |
+| 4th | 2/5 | Fixed 5 USDT |
 
 ### Verification
 
-Every draw emits a `DrawExecuted(roundId, uint256[5] winningNumbers)` event — anyone can verify the 5 winning numbers directly on [Polygonscan](https://polygonscan.com/address/0x7b3e0543b54a13688a4ee274576ef7c057bd83ac#events). Each VRF request and fulfillment is also recorded on-chain by the [Chainlink VRF Coordinator](https://polygonscan.com/address/0xec0Ed46f36576541C75739E915ADbCb3DE24bD77) — independently auditable.
+Every draw emits a `DrawExecuted(roundId, uint256[5] winningNumbers)` event — anyone can verify the 5 winning numbers directly on [Polygonscan](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD#events). Each VRF request and fulfillment is also recorded on-chain by the [Chainlink VRF Coordinator](https://polygonscan.com/address/0xec0Ed46f36576541C75739E915ADbCb3DE24bD77) — independently auditable.
 
 ## ⚡ XOIO — On-Chain Hash Game
 
@@ -76,8 +77,9 @@ Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.
 ```
 contracts/
 ├── poly39/
-│   ├── Poly39V6_Polygon.sol      # Lottery contract V6 (legacy, paused backup)
-│   └── Poly39_VRF.sol            # Lottery contract V7 (mainnet, Chainlink VRF)
+│   ├── Lotto39.sol               # Lottery contract (current, 2 USDT, Chainlink VRF v2.5)
+│   ├── Poly39_VRF.sol            # Lottery contract v7 (previous, 5 USDT)
+│   └── Poly39V6_Polygon.sol      # Lottery contract v6 (legacy, paused backup)
 ├── xoio/
 │   ├── XOIOV2.sol                # Hash game v2
 │   ├── XOIOV3.sol                # Hash game v3
@@ -95,7 +97,7 @@ contracts/
 ## 🔒 Security
 
 - All contracts are **verified on Polygonscan** — source code is public and auditable.
-- **Randomness comes from Chainlink VRF v2.5** (Poly39 V7 & XOIO V4) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
+- **Randomness comes from Chainlink VRF v2.5** (Poly39 `Lotto39` & XOIO V4) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
 - All funds are held in the smart contracts; payouts execute automatically.
 
 ## 📬 Contact
