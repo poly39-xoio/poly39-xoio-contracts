@@ -11,8 +11,25 @@ A fully decentralized 5-number lottery on Polygon.
 | Contract | Ticket | RNG | Status |
 |---|---|---|---|
 | `Lotto39` | **2 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD) — **live** |
+| `Lotto39_3U_PLUS` | **3 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222`](https://polygonscan.com/address/0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222) — **live (High Stakes + gasless buy)** |
 
 - **Site:** https://poly39.io
+
+### 3U — High Stakes (current, Polygon mainnet)
+
+Same lottery, higher stakes — `Lotto39_3U_PLUS` at [`0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222`](https://polygonscan.com/address/0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222) ([verified source](https://polygonscan.com/address/0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222#code)).
+
+| Setting | Value |
+|---|---|
+| Ticket price | **3 USDT** |
+| Prizes | 1st **50%** of pool · 2nd **8%** · 3rd **100 USDT** flat · 4th **6 USDT** flat |
+| Limits | 1,500 tickets/round · 500/player · **126 per tx** (max **378 USDT**/tx) |
+| RNG | Chainlink VRF v2.5 (same subscription as the 2 USDT contract) |
+
+**Gasless buying (buy-on-behalf):** `buyMultipleTicketsFor(buyer, numbersList, deadline, v, r, s)` lets a relayer
+submit a purchase on a player's behalf using an **EIP-2612 permit signature** — the player signs off-chain
+(no gas, no POL needed), the relayer pays the gas. The permit is an **exact-amount** approval consumed in the
+same transaction (no leftover allowance). A `RelayedPurchase(relayer, buyer, …)` event is emitted for transparency.
 
 ### How it works
 
