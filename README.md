@@ -10,10 +10,14 @@ A fully decentralized 5-number lottery on Polygon.
 
 | Contract | Ticket | RNG | Status |
 |---|---|---|---|
-| `Lotto39` | **2 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD) — **live** |
-| `Lotto39_3U_PLUS` | **3 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet** [`0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222`](https://polygonscan.com/address/0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222) — **live (High Stakes + gasless buy)** |
+| `Lotto39_3U_PLUS` | **3 USDT** | **Chainlink VRF v2.5** (verifiable) | **Mainnet (current)** [`0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222`](https://polygonscan.com/address/0x8b6d8e01e7c3f66e916ed70bba6da86eb0136222) — **live (High Stakes + gasless buy)** |
+| `Lotto39_2U` | **2 USDT** | **Chainlink VRF v2.5** (verifiable) | **Legacy — retired 2026-09-26** (contract still on Polygon mainnet: [`0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD)) |
 
 - **Site:** https://poly39.io
+
+### Legacy — 2 USDT `Lotto39_2U` (retired 2026-09-26)
+
+The original 2 USDT contract (`Lotto39_2U`, previously `Lotto39`) is **retired as of 2026-09-26** — the front end now serves the 3 USDT High Stakes game. The contract itself **remains deployed and verified on Polygon mainnet** ([`0xb675247e…f5dD`](https://polygonscan.com/address/0xb675247e5ab6fe44D0D7919944F3D4c6F118f5dD#code)); its source is kept here under [`contracts/legacy/Lotto39_2U.sol`](contracts/legacy/Lotto39_2U.sol) for transparency and auditability.
 
 ### 3U — High Stakes (current, Polygon mainnet)
 
@@ -91,7 +95,9 @@ Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.
 ```
 contracts/
 ├── poly39/
-│   └── Lotto39.sol               # Lottery contract (2 USDT, Chainlink VRF v2.5)
+│   └── Lotto39_3U_PLUS.sol       # Lottery contract (3 USDT High Stakes, Chainlink VRF v2.5, gasless buy) — current
+├── legacy/
+│   └── Lotto39_2U.sol            # Lottery contract (2 USDT) — retired 2026-09-26; contract still on Polygon mainnet
 ├── xoio/
 │   ├── XOIOV2.sol                # Hash game v2
 │   ├── XOIOV3.sol                # Hash game v3
@@ -109,7 +115,7 @@ contracts/
 ## 🔒 Security
 
 - All contracts are **verified on Polygonscan** — source code is public and auditable.
-- **Randomness comes from Chainlink VRF v2.5** (Poly39 `Lotto39` & XOIO V4) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
+- **Randomness comes from Chainlink VRF v2.5** (Poly39 `Lotto39_3U_PLUS` & XOIO V4) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
 - All funds are held in the smart contracts; payouts execute automatically.
 
 ## 📬 Contact
