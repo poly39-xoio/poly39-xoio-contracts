@@ -1,0 +1,39 @@
+# ===== 建置產物 / 快取 =====
+build/
+dist/
+out/
+cache/
+artifacts/
+node_modules/
+typechain/
+typechain-types/
+
+# ===== 本機備份與暫存副本(原則:備份一律留本機、不進倉庫)=====
+*.bak
+*.bak-*
+*.sol.bak*
+*.orig
+*~
+*.tmp
+*.swp
+*.log
+
+# ===== 草稿 / 測試檔(僅本機)=====
+*TEST*.sol
+*_test_draft*.sol
+contracts/poly39/Lotto39_3U.sol        # 已被 Lotto39_3U_PLUS.sol 取代的舊草稿
+contracts/mahjong/MahjongMatch.txt     # 編譯輸出暫存
+
+# ===== 環境 / 密鑰(絕不進倉庫)=====
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets*.json
+
+# ===== 作業系統 / 編輯器 =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
