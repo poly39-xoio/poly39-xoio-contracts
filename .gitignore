@@ -21,8 +21,12 @@ typechain-types/
 # ===== 草稿 / 測試檔(僅本機)=====
 *TEST*.sol
 *_test_draft*.sol
-contracts/poly39/Lotto39_3U.sol        # 已被 Lotto39_3U_PLUS.sol 取代的舊草稿
-contracts/mahjong/MahjongMatch.txt     # 編譯輸出暫存
+# 已被 Lotto39_3U_PLUS.sol 取代的舊草稿
+contracts/poly39/Lotto39_3U.sol
+# 編譯輸出暫存
+contracts/mahjong/MahjongMatch.txt
+# 內部規格(僅本機)
+contracts/poly39/ROUND_INTEGRITY_SPEC.md
 
 # ===== 環境 / 密鑰(絕不進倉庫)=====
 .env
