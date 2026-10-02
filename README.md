@@ -61,8 +61,8 @@ Every draw emits a `DrawExecuted(roundId, uint256[5] winningNumbers)` event — 
 
 Instant betting on the last hexadecimal character of a **Chainlink VRF**-generated random value.
 
-- **Contracts:** `XOIOV2` → `XOIOV3` → `XOIOV4` (latest)
-- **Mainnet address (V4):** `0x932B485e0cc57Ca23Ca735984f7846d6A3c638E0`
+- **Contract:** `XOIOV5` (latest)
+- **Mainnet address (V5):** `0xf39E2beAe8329c0C8b605c8164849eD5FE0E5CBa`
 - **Site:** https://xoio.io
 
 ### How it works
@@ -76,8 +76,8 @@ Instant betting on the last hexadecimal character of a **Chainlink VRF**-generat
 
 Four-player Taiwanese (16-tile) mahjong with **on-chain escrow and settlement** on Polygon. The platform never participates in betting — the contract only escrows each player's deposit, keeps a per-seat on-chain ledger, takes a 5% winner management fee, and refunds balances when a table finishes or is aborted.
 
-- **Contract:** `MahjongMatch` (v2.2)
-- **Mainnet address:** `0xDc436C37F13eaE63B4dE315FdC0e87529968eD86`
+- **Contract:** `MahjongMatch` (v3, gasless join/topUp/exit)
+- **Mainnet address:** `0x6f140A7CA971E09595Fa17c4d7C9df384d825a6e`
 - **Site:** https://xoio.io/mahjong.html
 
 ### How it works
@@ -99,12 +99,8 @@ contracts/
 ├── legacy/
 │   └── Lotto39_2U.sol            # Lottery contract (2 USDT) — retired 2026-09-26; contract still on Polygon mainnet
 ├── xoio/
-│   ├── XOIOV2.sol                # Hash game v2
-│   ├── XOIOV3.sol                # Hash game v3
-│   ├── XOIOV4.sol                # Hash game v4 (mainnet, Chainlink VRF)
-│   ├── XOIOV2_flattened.sol
-│   ├── XOIOV3_flattened.sol
-│   └── XOIOV4_flattened.sol
+│   ├── XOIOV5.sol                # Hash game v5 (mainnet, Chainlink VRF v2.5, gasless bet)
+│   └── V5_SPEC.md                # Hash game v5 spec (relayer / limits / permit)
 └── mahjong/
     ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v2.2)
     ├── GAME_FLOW_CONTROL_SPEC.md
@@ -115,7 +111,7 @@ contracts/
 ## 🔒 Security
 
 - All contracts are **verified on Polygonscan** — source code is public and auditable.
-- **Randomness comes from Chainlink VRF v2.5** (Poly39 `Lotto39_3U_PLUS` & XOIO V4) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
+- **Randomness comes from Chainlink VRF v2.5** (Poly39 `Lotto39_3U_PLUS` & XOIO V5) — the industry-standard verifiable random function. Winning numbers/hashes are provably random and tamper-proof; every request and fulfillment is on-chain auditable.
 - All funds are held in the smart contracts; payouts execute automatically.
 
 ## 📬 Contact
