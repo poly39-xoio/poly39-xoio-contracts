@@ -88,7 +88,7 @@ Four-player Taiwanese (16-tile) mahjong with **on-chain escrow and settlement** 
 - **5% management fee** on the winner (accumulated on-chain); balances are **automatically refunded** when a table finishes or is aborted.
 - A backend `settler` submits round results (`settleRound`); the tai cap and payout formula are **hard-coded** in the contract.
 
-Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.md`, `CIRCLE_CONTINUE_SPEC.md`, `MAHJONG_V2_NOTE.md`.
+Source: `contracts/mahjong/MahjongMatch.sol` — specs: `GAME_FLOW_CONTROL_SPEC.md`, `CIRCLE_CONTINUE_SPEC.md`.
 
 ## 📁 Repository structure
 
@@ -102,10 +102,9 @@ contracts/
 │   ├── XOIOV5.sol                # Hash game v5 (mainnet, Chainlink VRF v2.5, gasless bet)
 │   └── V5_SPEC.md                # Hash game v5 spec (relayer / limits / permit)
 └── mahjong/
-    ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v2.2)
+    ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v3, gasless join/topUp/exit)
     ├── GAME_FLOW_CONTROL_SPEC.md
-    ├── CIRCLE_CONTINUE_SPEC.md
-    └── MAHJONG_V2_NOTE.md
+    └── CIRCLE_CONTINUE_SPEC.md
 ```
 
 ## 🔒 Security

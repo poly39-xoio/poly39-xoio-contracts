@@ -4,6 +4,11 @@ pragma solidity ^0.8.20;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
 
+/// EIP-2612 permit(代買用;Polygon USDT0 支援,domain 用 salt=bytes32(chainId),前端照抄)
+interface IERC20Permit {
+    function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) external;
+}
+
 /**
  * @title MahjongMatch — 台灣16張麻將 · 4真人桌結算合約 (DRAFT v0.1)
  * @notice 定位:平台不參賭,只做「分發賭資 + 驗證結算 + 抽 winner 5% 管理費」。
@@ -137,6 +142,28 @@ contract MahjongMatch is ConfirmedOwner {
      * @param amount 本次放入桌內的金額(USDT)
      */
     function joinTable(uint256 tableId, uint256 amount) external tableExists(tableId) {
+        _joinTable(msg.sender, tableId, amount);
+    }
+
+    /**
+     * 代買入桌(v3):玩家用 EIP-2612 permit 離線簽名,任何人(relayer)可代送 → 客戶免 gas/免 POL。
+     * 授權為「精確金額、一次性」;玩家/座位一律綁 buyer(非 msg.sender)。
+     */
+    function joinTableFor(
+        address buyer,
+        uint256 tableId,
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external tableExists(tableId) {
+        require(buyer != address(0), "bad buyer");
+        _permitExact(buyer, amount, deadline, v, r, s);
+        _joinTable(buyer, tableId, amount);
+    }
+
+    function _joinTable(address player, uint256 tableId, uint256 amount) internal {
         require(!paused, "Paused");
         Table storage t = tables[tableId];
         require(t.state == uint8(TableState.Open), "Not open");
@@ -146,16 +173,16 @@ contract MahjongMatch is ConfirmedOwner {
         uint8 seatIdx = 255;
         for (uint8 i = 0; i < PLAYERS; i++) {
             if (t.seats[i].paid) {
-                require(t.seats[i].player != msg.sender, "Already in");
+                require(t.seats[i].player != player, "Already in");
             } else if (seatIdx == 255) {
                 seatIdx = i;
             }
         }
         require(seatIdx != 255, "Table full");
 
-        require(IERC20(USDT_ADDRESS).transferFrom(msg.sender, address(this), amount), "Transfer failed");
-        t.seats[seatIdx] = Seat({player: msg.sender, balance: amount, paid: true});
-        emit PlayerJoined(tableId, msg.sender, seatIdx);
+        require(IERC20(USDT_ADDRESS).transferFrom(player, address(this), amount), "Transfer failed");
+        t.seats[seatIdx] = Seat({player: player, balance: amount, paid: true});
+        emit PlayerJoined(tableId, player, seatIdx);
 
         // 湊滿 4 人 → Live
         if (seatIdx == 3) {
@@ -173,13 +200,32 @@ contract MahjongMatch is ConfirmedOwner {
      * 直接 abortTable 解散不賠償(鏈上強制破產線,不依賴後端檢查)。
      */
     function topUp(uint256 tableId, uint256 amount) external tableExists(tableId) {
+        _topUp(msg.sender, tableId, amount);
+    }
+
+    /// @notice 代買補碼(v3):permit 離線簽名,relayer 代送(客戶免 gas/免 POL)
+    function topUpFor(
+        address buyer,
+        uint256 tableId,
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external tableExists(tableId) {
+        require(buyer != address(0), "bad buyer");
+        _permitExact(buyer, amount, deadline, v, r, s);
+        _topUp(buyer, tableId, amount);
+    }
+
+    function _topUp(address player, uint256 tableId, uint256 amount) internal {
         Table storage t = tables[tableId];
         require(t.state == uint8(TableState.Live) || t.state == uint8(TableState.Open), "Not active");
         require(amount > 0, "Zero amount");
         for (uint8 i = 0; i < PLAYERS; i++) {
             Seat storage s = t.seats[i];
-            if (s.paid && s.player == msg.sender) {
-                require(IERC20(USDT_ADDRESS).transferFrom(msg.sender, address(this), amount), "Transfer failed");
+            if (s.paid && s.player == player) {
+                require(IERC20(USDT_ADDRESS).transferFrom(player, address(this), amount), "Transfer failed");
                 s.balance += amount;
                 // 補完仍低於破產線 → 該玩家破產,桌解散、全員退款不賠償
                 if (s.balance < t.base) {
@@ -191,6 +237,13 @@ contract MahjongMatch is ConfirmedOwner {
             }
         }
         revert("Not in table");
+    }
+
+    /** permit 取授權:金額不足才呼叫 permit(重試/已授權時冪等,避免因 permit 已用而整筆失敗)。精確金額、一次性。 */
+    function _permitExact(address owner_, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) internal {
+        if (IERC20(USDT_ADDRESS).allowance(owner_, address(this)) < value) {
+            IERC20Permit(USDT_ADDRESS).permit(owner_, address(this), value, deadline, v, r, s);
+        }
     }
 
     // ============ 2. 每局開始(settler 提交 seed)============
