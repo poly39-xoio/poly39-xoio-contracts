@@ -76,8 +76,8 @@ Instant betting on the last hexadecimal character of a **Chainlink VRF**-generat
 
 Four-player Taiwanese (16-tile) mahjong with **on-chain escrow and settlement** on Polygon. The platform never participates in betting — the contract only escrows each player's deposit, keeps a per-seat on-chain ledger, takes a 5% winner management fee, and refunds balances when a table finishes or is aborted.
 
-- **Contract:** `MahjongMatch` (v3, gasless join/topUp/exit)
-- **Mainnet address:** `0x6f140A7CA971E09595Fa17c4d7C9df384d825a6e`
+- **Contract:** `MahjongMatch` (v4, gasless join/topUp/exit; every call requires a fresh EIP-2612 permit)
+- **Mainnet address:** `0x5AcB9C418dAd54B06FB74e5DFaC370C932E61DE7`
 - **Site:** https://xoio.io/mahjong.html
 
 ### How it works
@@ -102,7 +102,7 @@ contracts/
 │   ├── XOIOV5.sol                # Hash game v5 (mainnet, Chainlink VRF v2.5, gasless bet)
 │   └── V5_SPEC.md                # Hash game v5 spec (relayer / limits / permit)
 └── mahjong/
-    ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v3, gasless join/topUp/exit)
+    ├── MahjongMatch.sol          # 4-player Taiwanese mahjong, on-chain escrow (v4; every call requires a fresh EIP-2612 permit)
     ├── GAME_FLOW_CONTROL_SPEC.md
     └── CIRCLE_CONTINUE_SPEC.md
 ```
