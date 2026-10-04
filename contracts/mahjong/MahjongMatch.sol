@@ -239,11 +239,14 @@ contract MahjongMatch is ConfirmedOwner {
         revert("Not in table");
     }
 
-    /** permit 取授權:金額不足才呼叫 permit(重試/已授權時冪等,避免因 permit 已用而整筆失敗)。精確金額、一次性。 */
+    /**
+     * permit 取授權(v4 安全修正,Blockaid 2026-10-04 要求):
+     * 每次呼叫都必須帶 owner 的「有效 permit 簽名」才拉款 —— 不再因「已有 allowance」而短路。
+     * 理由:舊版在 allowance >= value 時跳過 permit,任何人即可拿別人錢包當 buyer 呼叫
+     * joinTableFor/topUpFor,用既有 approve 把該錢包的 USDT 拉走(第三方代扣風險)。
+     */
     function _permitExact(address owner_, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) internal {
-        if (IERC20(USDT_ADDRESS).allowance(owner_, address(this)) < value) {
-            IERC20Permit(USDT_ADDRESS).permit(owner_, address(this), value, deadline, v, r, s);
-        }
+        IERC20Permit(USDT_ADDRESS).permit(owner_, address(this), value, deadline, v, r, s);
     }
 
     // ============ 2. 每局開始(settler 提交 seed)============
